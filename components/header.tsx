@@ -13,8 +13,8 @@ const exportChat = (messages: UIMessage[]) => {
   const lines = messages.map((m) => {
     const role = m.role === "user" ? "You" : "ManiBot";
     const parts = m.parts
-      .filter((p: any) => p.type === "text")
-      .map((p: any) => p.text)
+      .filter((p) => p.type === "text")
+      .map((p) => (p as { type: "text"; text: string }).text)
       .join("");
     return `[${role}]\n${parts}`;
   });
