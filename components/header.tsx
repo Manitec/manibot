@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-export const Header = () => {
+interface HeaderProps {
+  onClearHistory?: () => void;
+}
+
+export const Header = ({ onClearHistory }: HeaderProps) => {
   return (
     <div className="fixed right-0 left-0 w-full top-0 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
       <div className="flex justify-between items-center px-4 py-3">
@@ -14,14 +18,25 @@ export const Header = () => {
             by Manitec
           </span>
         </Link>
-        <Link
-          href="https://manitec.pw"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-        >
-          manitec.pw
-        </Link>
+        <div className="flex items-center gap-3">
+          {onClearHistory && (
+            <button
+              onClick={onClearHistory}
+              className="text-xs text-zinc-400 hover:text-red-400 transition-colors duration-150"
+              title="Clear chat history"
+            >
+              Clear history
+            </button>
+          )}
+          <Link
+            href="https://manitec.pw"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+          >
+            manitec.pw
+          </Link>
+        </div>
       </div>
     </div>
   );
