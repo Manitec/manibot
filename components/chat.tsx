@@ -2,37 +2,22 @@
 
 import { defaultModel, modelID } from "@/ai/providers";
 import { useChat } from "@ai-sdk/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Textarea } from "./textarea";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "./messages";
 import { Header } from "./header";
 import { toast } from "sonner";
-import type { UIMessage } from "ai";
 
 const STORAGE_KEY = "manibot_chat_history";
 
 export default function Chat() {
   const [input, setInput] = useState("");
   const [selectedModel, setSelectedModel] = useState<modelID>(defaultModel);
-  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
   const [loaded, setLoaded] = useState(false);
-
-  // Load chat history from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setInitialMessages(JSON.parse(stored));
-      }
-    } catch {
-      // ignore parse errors
-    }
-    setLoaded(true);
-  }, []);
+  const hasRestored = useRef(false);
 
   const { sendMessage, messages, setMessages, status, stop } = useChat({
-    initialMessages,
     onError: (error) => {
       toast.error(
         error.message.length > 0
@@ -43,16 +28,35 @@ export default function Chat() {
     },
   });
 
-  // Save chat history to localStorage whenever messages change
+  // Restore from localStorage once on mount
   useEffect(() => {
-    if (messages.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-      } catch {
-        // ignore storage errors (e.g. private browsing quota)
+    if (hasRestored.current) return;
+    hasRestored.current = true;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
       }
+    } catch {
+      // ignore parse errors
     }
-  }, [messages]);
+    setLoaded(true);
+  }, [setMessages]);
+
+  // Save to localStorage on every message change
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      if (messages.length > 0) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      }
+    } catch {
+      // ignore storage quota errors
+    }
+  }, [messages, loaded]);
 
   const isLoading = status === "streaming" || status === "submitted";
 
@@ -62,7 +66,6 @@ export default function Chat() {
     toast.success("Chat history cleared.", { position: "top-center" });
   };
 
-  // Don't render until localStorage is read to avoid hydration flicker
   if (!loaded) return null;
 
   return (
