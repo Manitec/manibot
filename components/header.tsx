@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "./theme-toggle";
 
 interface HeaderProps {
   onClearHistory?: () => void;
@@ -19,13 +20,14 @@ export const Header = ({ onClearHistory }: HeaderProps) => {
           </span>
         </Link>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           {onClearHistory && (
             <button
               onClick={onClearHistory}
               className="text-xs text-zinc-400 hover:text-red-400 transition-colors duration-150"
               title="Clear chat history"
             >
-              Clear history
+              Clear
             </button>
           )}
           <Link
