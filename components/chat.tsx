@@ -28,7 +28,6 @@ export default function Chat() {
     },
   });
 
-  // Restore from localStorage once on mount
   useEffect(() => {
     if (hasRestored.current) return;
     hasRestored.current = true;
@@ -46,7 +45,6 @@ export default function Chat() {
     setLoaded(true);
   }, [setMessages]);
 
-  // Save to localStorage on every message change
   useEffect(() => {
     if (!loaded) return;
     try {
@@ -70,7 +68,7 @@ export default function Chat() {
 
   return (
     <div className="h-dvh flex flex-col justify-center w-full stretch">
-      <Header onClearHistory={handleClearHistory} />
+      <Header onClearHistory={handleClearHistory} messages={messages} />
       {messages.length === 0 ? (
         <div className="max-w-xl mx-auto w-full">
           <ProjectOverview />
