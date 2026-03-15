@@ -14,9 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vercel x Groq Chatbot",
-  description:
-    "This starter project uses Groq with the AI SDK via the Vercel Marketplace",
+  title: "ManiBot — by Manitec",
+  description: "ManiBot is an AI assistant powered by Groq, built by Manitec.",
 };
 
 export default function RootLayout({
