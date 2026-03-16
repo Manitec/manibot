@@ -10,9 +10,9 @@ export default function Page() {
   const handleNew = useCallback(() => setSessionId(nanoid()), [])
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar activeId={sessionId} onSelect={setSessionId} onNew={handleNew} />
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 min-w-0 h-screen overflow-hidden">
         <Chat key={sessionId} sessionId={sessionId} />
       </main>
     </div>

@@ -110,22 +110,24 @@ export default function Chat({ sessionId }: ChatProps) {
   if (!loaded) return null;
 
   return (
-    <div className="h-dvh flex flex-col justify-center w-full stretch">
+    <div className="h-screen flex flex-col w-full overflow-hidden">
       <Header onClearHistory={handleClearHistory} messages={messages} />
-      {messages.length === 0 ? (
-        <div className="max-w-xl mx-auto w-full">
-          <ProjectOverview />
-        </div>
-      ) : (
-        <Messages messages={messages} isLoading={isLoading} status={status} />
-      )}
+      <div className="flex-1 overflow-hidden flex flex-col justify-center">
+        {messages.length === 0 ? (
+          <div className="max-w-xl mx-auto w-full px-4">
+            <ProjectOverview />
+          </div>
+        ) : (
+          <Messages messages={messages} isLoading={isLoading} status={status} />
+        )}
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           sendMessage({ text: input }, { body: { selectedModel } });
           setInput("");
         }}
-        className="pb-8 bg-white dark:bg-black w-full max-w-xl mx-auto px-4 sm:px-0"
+        className="pb-8 bg-white dark:bg-black w-full max-w-xl mx-auto px-4 sm:px-0 shrink-0"
       >
         <Textarea
           selectedModel={selectedModel}
