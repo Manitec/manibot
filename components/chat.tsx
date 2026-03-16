@@ -8,14 +8,18 @@ import { ProjectOverview } from "./project-overview";
 import { Messages } from "./messages";
 import { Header } from "./header";
 import { toast } from "sonner";
+import { nanoid } from "nanoid";
 
-const STORAGE_KEY = "manibot_chat_history";
+interface ChatProps {
+  sessionId: string;
+}
 
-export default function Chat() {
+export default function Chat({ sessionId }: ChatProps) {
   const [input, setInput] = useState("");
   const [selectedModel, setSelectedModel] = useState<modelID>(defaultModel);
   const [loaded, setLoaded] = useState(false);
   const hasRestored = useRef(false);
+  const sessionCreated = useRef(false);
 
   const { sendMessage, messages, setMessages, status, stop } = useChat({
     onError: (error) => {
@@ -28,38 +32,74 @@ export default function Chat() {
     },
   });
 
+  // Load messages from Neon when sessionId changes
+  useEffect(() => {
+    hasRestored.current = false;
+    sessionCreated.current = false;
+    setMessages([]);
+    setLoaded(false);
+  }, [sessionId, setMessages]);
+
   useEffect(() => {
     if (hasRestored.current) return;
     hasRestored.current = true;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed);
-        }
-      }
-    } catch {
-      // ignore parse errors
-    }
-    setLoaded(true);
-  }, [setMessages]);
 
+    fetch(`/api/sessions/${sessionId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setMessages(data.map((m: { id: string; role: string; content: string }) => ({
+            id: m.id,
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })));
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, [sessionId, setMessages]);
+
+  // Save messages to Neon whenever they change
   useEffect(() => {
-    if (!loaded) return;
-    try {
-      if (messages.length > 0) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-      }
-    } catch {
-      // ignore storage quota errors
+    if (!loaded || messages.length === 0) return;
+
+    // Create session on first message
+    if (!sessionCreated.current) {
+      sessionCreated.current = true;
+      const firstUserMsg = messages.find(m => m.role === "user");
+      const title = firstUserMsg
+        ? firstUserMsg.content.slice(0, 40)
+        : "New Chat";
+
+      fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: sessionId, title }),
+      }).catch(() => {});
     }
-  }, [messages, loaded]);
+
+    // Save latest message
+    const last = messages[messages.length - 1];
+    if (last && (status === "ready" || status === "error")) {
+      fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: last.id ?? nanoid(),
+          sessionId,
+          role: last.role,
+          content: typeof last.content === "string"
+            ? last.content
+            : JSON.stringify(last.content),
+        }),
+      }).catch(() => {});
+    }
+  }, [messages, loaded, sessionId, status]);
 
   const isLoading = status === "streaming" || status === "submitted";
 
-  const handleClearHistory = () => {
-    localStorage.removeItem(STORAGE_KEY);
+  const handleClearHistory = async () => {
+    await fetch(`/api/sessions/${sessionId}`, { method: "DELETE" });
     setMessages([]);
     toast.success("Chat history cleared.", { position: "top-center" });
   };
