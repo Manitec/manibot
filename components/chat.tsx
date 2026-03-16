@@ -110,9 +110,9 @@ export default function Chat({ sessionId }: ChatProps) {
   if (!loaded) return null;
 
   return (
-    <div className="h-screen flex flex-col w-full overflow-hidden">
+    <div className="flex flex-col w-full" style={{ height: '100vh' }}>
       <Header onClearHistory={handleClearHistory} messages={messages} />
-      <div className="flex-1 overflow-hidden flex flex-col justify-center">
+      <div className="flex-1 overflow-y-auto flex flex-col justify-center min-h-0">
         {messages.length === 0 ? (
           <div className="max-w-xl mx-auto w-full px-4">
             <ProjectOverview />
@@ -121,24 +121,26 @@ export default function Chat({ sessionId }: ChatProps) {
           <Messages messages={messages} isLoading={isLoading} status={status} />
         )}
       </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendMessage({ text: input }, { body: { selectedModel } });
-          setInput("");
-        }}
-        className="pb-8 bg-white dark:bg-black w-full max-w-xl mx-auto px-4 sm:px-0 shrink-0"
-      >
-        <Textarea
-          selectedModel={selectedModel}
-          setSelectedModel={setSelectedModel}
-          handleInputChange={(e) => setInput(e.currentTarget.value)}
-          input={input}
-          isLoading={isLoading}
-          status={status}
-          stop={stop}
-        />
-      </form>
+      <div className="shrink-0 bg-white dark:bg-black w-full pb-4 pt-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            sendMessage({ text: input }, { body: { selectedModel } });
+            setInput("");
+          }}
+          className="w-full max-w-xl mx-auto px-4 sm:px-0"
+        >
+          <Textarea
+            selectedModel={selectedModel}
+            setSelectedModel={setSelectedModel}
+            handleInputChange={(e) => setInput(e.currentTarget.value)}
+            input={input}
+            isLoading={isLoading}
+            status={status}
+            stop={stop}
+          />
+        </form>
+      </div>
     </div>
   );
 }
