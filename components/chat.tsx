@@ -51,6 +51,7 @@ export default function Chat({ sessionId }: ChatProps) {
             id: m.id,
             role: m.role as "user" | "assistant",
             content: m.content,
+            parts: [{ type: "text" as const, text: m.content }],
           })));
         }
       })
@@ -65,7 +66,7 @@ export default function Chat({ sessionId }: ChatProps) {
       sessionCreated.current = true;
       const firstUserMsg = messages.find(m => m.role === "user");
       const title = firstUserMsg
-        ? firstUserMsg.content.slice(0, 40)
+        ? (typeof firstUserMsg.content === "string" ? firstUserMsg.content : "").slice(0, 40)
         : "New Chat";
 
       fetch("/api/sessions", {
