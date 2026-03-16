@@ -16,23 +16,23 @@
 
 ## Features
 
-- Streaming text responses powered by the [AI SDK by Vercel](https://sdk.vercel.ai/docs), allowing multiple AI providers to be used interchangeably with just a few lines of code.
-- Built-in tool integration for extending AI capabilities (demonstrated with a weather tool example).
-- Reasoning model support.
-- [shadcn/ui](https://ui.shadcn.com/) components for a modern, responsive UI powered by [Tailwind CSS](https://tailwindcss.com).
-- Built with the latest [Next.js](https://nextjs.org) App Router.
+* Streaming text responses powered by the [AI SDK by Vercel](https://sdk.vercel.ai/docs), allowing multiple AI providers to be used interchangeably with just a few lines of code.
+* Built-in tool integration for extending AI capabilities (demonstrated with a weather tool example).
+* Reasoning model support.
+* [shadcn/ui](https://ui.shadcn.com/) components for a modern, responsive UI powered by [Tailwind CSS](https://tailwindcss.com).
+* Built with the latest [Next.js](https://nextjs.org) App Router.
 
 ## Deploy Your Own
 
 You can deploy your own version to Vercel by clicking the button below:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=Vercel+x+Groq+Chatbot&repository-name=ai-sdk-starter-groq&repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-starter-groq&demo-title=Vercel+x+Groq+Chatbot&demo-url=https%3A%2F%2Fai-sdk-starter-groq.labs.vercel.dev%2F&demo-description=A+simple+chatbot+application+built+with+Next.js+that+uses+Groq+via+the+AI+SDK+and+the+Vercel+Marketplace&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22ai%22%2C%22productSlug%22%3A%22api-key%22%2C%22integrationSlug%22%3A%22groq%22%7D%5D)
+[!\[Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=Vercel+x+Groq+Chatbot&repository-name=ai-sdk-starter-groq&repository-url=https%253A%252F%252Fgithub.com%252Fvercel-labs%252Fai-sdk-starter-groq&demo-title=Vercel+x+Groq+Chatbot&demo-url=https%253A%252F%252Fai-sdk-starter-groq.labs.vercel.dev%252F&demo-description=A+simple+chatbot+application+built+with+Next.js+that+uses+Groq+via+the+AI+SDK+and+the+Vercel+Marketplace&products=%255B%257B%2522type%2522%253A%2522integration%2522%252C%2522protocol%2522%253A%2522ai%2522%252C%2522productSlug%2522%253A%2522api-key%2522%252C%2522integrationSlug%2522%253A%2522groq%2522%257D%255D)
 
 ## Running Locally
 
 1. Clone the repository and install dependencies:
 
-   ```bash
+```bash
    npm install
    # or
    yarn install
@@ -42,7 +42,7 @@ You can deploy your own version to Vercel by clicking the button below:
 
 2. Install the [Vercel CLI](https://vercel.com/docs/cli):
 
-   ```bash
+```bash
    npm i -g vercel
    # or
    yarn global add vercel
@@ -76,8 +76,9 @@ You can deploy your own version to Vercel by clicking the button below:
 
 4. Open [http://localhost:3000](http://localhost:3000) to view your new AI chatbot application.
 
-## Authors
+   ## Authors
 
-This repository is maintained by the [Vercel](https://vercel.com) team and community contributors.
+   This repository is maintained by the [Vercel](https://vercel.com) team and community contributors.
 
-Contributions are welcome! Feel free to open issues or submit pull requests to enhance functionality or fix bugs.
+   Contributions are welcome! Feel free to open issues or submit pull requests to enhance functionality or fix bugs.
+
