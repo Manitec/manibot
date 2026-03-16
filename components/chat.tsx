@@ -14,6 +14,13 @@ interface ChatProps {
   sessionId: string;
 }
 
+function getTextContent(parts: { type: string; text?: string }[]): string {
+  return parts
+    .filter(p => p.type === "text")
+    .map(p => p.text ?? "")
+    .join("");
+}
+
 export default function Chat({ sessionId }: ChatProps) {
   const [input, setInput] = useState("");
   const [selectedModel, setSelectedModel] = useState<modelID>(defaultModel);
@@ -66,7 +73,7 @@ export default function Chat({ sessionId }: ChatProps) {
       sessionCreated.current = true;
       const firstUserMsg = messages.find(m => m.role === "user");
       const title = firstUserMsg
-        ? (typeof firstUserMsg.content === "string" ? firstUserMsg.content : "").slice(0, 40)
+        ? getTextContent(firstUserMsg.parts as { type: string; text?: string }[]).slice(0, 40)
         : "New Chat";
 
       fetch("/api/sessions", {
@@ -78,6 +85,7 @@ export default function Chat({ sessionId }: ChatProps) {
 
     const last = messages[messages.length - 1];
     if (last && (status === "ready" || status === "error")) {
+      const textContent = getTextContent(last.parts as { type: string; text?: string }[]);
       fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,9 +93,7 @@ export default function Chat({ sessionId }: ChatProps) {
           id: last.id ?? nanoid(),
           sessionId,
           role: last.role,
-          content: typeof last.content === "string"
-            ? last.content
-            : JSON.stringify(last.content),
+          content: textContent || JSON.stringify(last.parts),
         }),
       }).catch(() => {});
     }
