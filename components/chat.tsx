@@ -9,9 +9,12 @@ import { Messages } from "./messages";
 import { Header } from "./header";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
+import { MenuIcon } from "lucide-react";
 
 interface ChatProps {
   sessionId: string;
+  onToggleSidebar?: () => void;
+  sidebarOpen?: boolean;
 }
 
 function getTextContent(parts: { type: string; text?: string }[]): string {
@@ -21,7 +24,7 @@ function getTextContent(parts: { type: string; text?: string }[]): string {
     .join("");
 }
 
-export default function Chat({ sessionId }: ChatProps) {
+export default function Chat({ sessionId, onToggleSidebar, sidebarOpen }: ChatProps) {
   const [input, setInput] = useState("");
   const [selectedModel, setSelectedModel] = useState<modelID>(defaultModel);
   const [loaded, setLoaded] = useState(false);
@@ -110,8 +113,13 @@ export default function Chat({ sessionId }: ChatProps) {
   if (!loaded) return null;
 
   return (
-    <div className="flex flex-col w-full" style={{ height: '100vh' }}>
-      <Header onClearHistory={handleClearHistory} messages={messages} />
+    <div className="flex flex-col w-full h-dvh">
+      <Header
+        onClearHistory={handleClearHistory}
+        messages={messages}
+        onToggleSidebar={onToggleSidebar}
+        sidebarOpen={sidebarOpen}
+      />
       <div className="flex-1 overflow-y-auto flex flex-col justify-center min-h-0">
         {messages.length === 0 ? (
           <div className="max-w-xl mx-auto w-full px-4">

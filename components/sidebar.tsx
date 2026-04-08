@@ -29,7 +29,7 @@ export default function Sidebar({ activeId, onSelect, onNew }: SidebarProps) {
   useEffect(() => { load() }, [activeId])
 
   return (
-    <aside className="w-64 h-screen bg-zinc-900 border-r border-zinc-800 flex flex-col pt-16 p-3 gap-2">
+    <aside className="w-64 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col pt-16 p-3 gap-2">
       <button
         onClick={onNew}
         className="flex items-center gap-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-lg px-3 py-2 w-full"
