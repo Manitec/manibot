@@ -9,7 +9,6 @@ import { Messages } from "./messages";
 import { Header } from "./header";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
-import { MenuIcon } from "lucide-react";
 
 interface ChatProps {
   sessionId: string;
