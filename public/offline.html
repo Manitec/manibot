@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManiBot — Offline</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --border: #27272a;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --accent: #ffffff;
+    }
+
+    html, body {
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .icon {
+      width: 56px;
+      height: 56px;
+      color: var(--muted);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 28ch;
+    }
+
+    button {
+      margin-top: 0.5rem;
+      padding: 0.6rem 1.5rem;
+      background: var(--accent);
+      color: #09090b;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+    }
+
+    button:hover { opacity: 0.85; }
+    button:active { opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.584 10.587a2 2 0 002.828 2.83M9.363 5.365A7 7 0 0118.57 14.59M6.228 6.228A10.451 10.451 0 003 12c1.657 3.978 5.624 6.75 9 6.75a10.4 10.4 0 004.558-1.03" />
+    </svg>
+    <h1>You're offline</h1>
+    <p>ManiBot needs a connection to talk. Check your network and try again.</p>
+    <button onclick="window.location.reload()">Try again</button>
+  </div>
+</body>
+</html>
