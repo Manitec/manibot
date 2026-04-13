@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "pw.manitec.chat.twa",
+        "sha256_cert_fingerprints": ["E8:A1:CD:01:3A:1B:E2:9A:61:AA:AD:11:16:78:F2:24:13:90:B5:0C:66:E7:24:B2:D5:76:94:57:80:A8:78:89"]
+      }
+    }]

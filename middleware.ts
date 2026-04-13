@@ -17,6 +17,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Excludes: _next assets, favicon, API login, sw.js, manifest, icons, and offline page
-  matcher: ['/((?!_next|favicon.ico|api/login|sw.js|manifest.webmanifest|icons|offline.html).*)']
+  // Excludes: _next assets, favicon, API login, sw.js, manifest, icons, offline page, and .well-known (for TWA assetlinks)
+  matcher: ['/((?!_next|favicon.ico|api/login|sw\.js|manifest\.webmanifest|icons|offline\.html|\.well-known).*)']
 }
