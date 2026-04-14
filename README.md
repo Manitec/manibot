@@ -1,84 +1,181 @@
-<a href="https://ai-sdk-starter-groq.vercel.app">
-  <h1 align="center">Vercel x Groq Chatbot</h1>
-</a>
+# 🤖 ManiBot
 
-<p align="center">
-  An open-source AI chatbot app template built with Next.js, the AI SDK by Vercel, and Groq.
-</p>
+**ManiBot** is the public-facing AI for the [Manitec](https://manitec.pw) brand — a streaming chatbot built with Next.js, the Vercel AI SDK (v5), and Groq. It lives at [chat.manitec.pw](https://chat.manitec.pw).
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running Locally</strong></a> ·
-  <a href="#authors"><strong>Authors</strong></a>
-</p>
-<br/>
+ManiBot handles general-purpose AI conversations on behalf of the Manitec brand: helping users, answering questions, and representing the public voice of the empire. It is not an internal tool — that's what HexBot is for.
+
+---
+
+## Stack
+
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 15 (App Router, Turbopack) |
+| AI SDK | [Vercel AI SDK v5](https://sdk.vercel.ai) |
+| AI Provider | [Groq](https://groq.com) |
+| UI | shadcn/ui + Tailwind CSS v4 |
+| Database | [Neon](https://neon.tech) (serverless Postgres) |
+| Auth | Cookie-based gate (`GATE_PASSWORD`) |
+| Deploy | [Vercel](https://vercel.com) |
+| Package Manager | pnpm |
+
+---
+
+## Models
+
+All models are served through Groq. The **default model is `kimi-k2`**.
+
+| Model ID | Notes |
+|---|---|
+| `kimi-k2` ⭐ | Moonshot AI — default |
+| `meta-llama/llama-4-scout-17b-16e-instruct` | Llama 4 Scout |
+| `llama-3.1-8b-instant` | Fast, lightweight |
+| `deepseek-r1-distill-llama-70b` | Reasoning model (chain-of-thought) |
+| `llama-3.3-70b-versatile` | Strong general-purpose model |
+
+Models are configured in [`ai/providers.ts`](./ai/providers.ts).
+
+---
 
 ## Features
 
-* Streaming text responses powered by the [AI SDK by Vercel](https://sdk.vercel.ai/docs), allowing multiple AI providers to be used interchangeably with just a few lines of code.
-* Built-in tool integration for extending AI capabilities (demonstrated with a weather tool example).
-* Reasoning model support.
-* [shadcn/ui](https://ui.shadcn.com/) components for a modern, responsive UI powered by [Tailwind CSS](https://tailwindcss.com).
-* Built with the latest [Next.js](https://nextjs.org) App Router.
+- **Streaming responses** powered by Vercel AI SDK
+- **Session persistence** — chat history saved to Neon Postgres per session
+- **Multi-model selector** — switch between Groq models in the UI
+- **Reasoning support** — DeepSeek R1 sends chain-of-thought reasoning blocks
+- **PWA support** — installable on Android/iOS, offline page, TWA-ready
+- **Mobile-first** — collapsible sidebar, `100dvh` layout, hamburger toggle
+- **Branded system prompt** — loaded from [`prompts/manibot-system.md`](./prompts/manibot-system.md)
+- **Cookie-based auth gate** — protects the UI, login page excluded
+- **Weather tool** — example tool integration via `ai/tools.ts`
 
-## Deploy Your Own
+---
 
-You can deploy your own version to Vercel by clicking the button below:
+## Project Structure
 
-[!\[Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=Vercel+x+Groq+Chatbot&repository-name=ai-sdk-starter-groq&repository-url=https%253A%252F%252Fgithub.com%252Fvercel-labs%252Fai-sdk-starter-groq&demo-title=Vercel+x+Groq+Chatbot&demo-url=https%253A%252F%252Fai-sdk-starter-groq.labs.vercel.dev%252F&demo-description=A+simple+chatbot+application+built+with+Next.js+that+uses+Groq+via+the+AI+SDK+and+the+Vercel+Marketplace&products=%255B%257B%2522type%2522%253A%2522integration%2522%252C%2522protocol%2522%253A%2522ai%2522%252C%2522productSlug%2522%253A%2522api-key%2522%252C%2522integrationSlug%2522%253A%2522groq%2522%257D%255D)
+```
+manibot/
+├── ai/
+│   ├── providers.ts         # Groq model registry + default
+│   └── tools.ts             # AI tool definitions (weather, etc.)
+├── app/
+│   ├── api/
+│   │   ├── chat/            # POST /api/chat — main streaming endpoint
+│   │   ├── login/           # POST /api/login — sets auth cookie
+│   │   ├── messages/        # GET/POST /api/messages
+│   │   └── sessions/        # GET/POST/DELETE /api/sessions
+│   ├── login/               # Login page
+│   └── page.tsx             # Main chat UI
+├── components/              # shadcn/ui components
+├── docs/                    # Internal documentation
+├── lib/
+│   ├── db.ts                # Neon Postgres client + queries
+│   └── hooks/               # Custom React hooks
+├── prompts/
+│   └── manibot-system.md    # ManiBot's system prompt (edit this to change behavior)
+├── public/                  # Static assets, PWA icons, manifest, service worker
+├── middleware.ts            # Auth gate — protects all routes except /login + assets
+└── instrumentation.ts       # OpenTelemetry setup
+```
 
-## Running Locally
+---
 
-1. Clone the repository and install dependencies:
+## Local Setup
+
+### 1. Clone & install
 
 ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+git clone https://github.com/Manitec/manibot.git
+cd manibot
+pnpm install
+```
 
-2. Install the [Vercel CLI](https://vercel.com/docs/cli):
+### 2. Set up environment variables
+
+Copy the example and fill in your values:
 
 ```bash
-   npm i -g vercel
-   # or
-   yarn global add vercel
-   # or
-   pnpm install -g vercel
-   ```
+cp .env.example .env.local
+```
 
-   Once installed, link your local project to your Vercel project:
+Required variables:
 
-   ```bash
-   vercel link
-   ```
+```env
+GROQ_API_KEY=          # Your Groq API key — https://console.groq.com
+DATABASE_URL=          # Neon Postgres connection string
+GATE_PASSWORD=         # Password for the ManiBot login gate
+```
 
-   After linking, pull your environment variables:
+> **Tip:** If you have the [Vercel CLI](https://vercel.com/docs/cli) installed and this project linked, you can pull env vars directly:
+> ```bash
+> vercel link
+> vercel env pull
+> ```
 
-   ```bash
-   vercel env pull
-   ```
+### 3. Initialize the database
 
-   This will create a `.env.local` file with all the necessary environment variables.
+The DB schema is auto-created on first request via `initDB()` in `lib/db.ts`. No manual migration needed.
 
-3. Run the development server:
+### 4. Run the dev server
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   ```
+```bash
+pnpm dev
+```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view your new AI chatbot application.
+Open [http://localhost:3000](http://localhost:3000) and log in with your `GATE_PASSWORD`.
 
-   ## Authors
+---
 
-   This repository is maintained by the [Vercel](https://vercel.com) team and community contributors.
+## Deployment
 
-   Contributions are welcome! Feel free to open issues or submit pull requests to enhance functionality or fix bugs.
+ManiBot deploys automatically to Vercel on every push to `main`.
 
+- **Production URL:** [chat.manitec.pw](https://chat.manitec.pw)
+- **Vercel Project:** [vercel.com/manitecs-projects/mani_bot](https://vercel.com/manitecs-projects/mani_bot)
+- **Vercel Team:** manitec's projects
+
+Required environment variables on Vercel: `GROQ_API_KEY`, `DATABASE_URL`, `GATE_PASSWORD`.
+
+---
+
+## Customization
+
+### Changing ManiBot's personality or behavior
+
+Edit [`prompts/manibot-system.md`](./prompts/manibot-system.md). This file is loaded at runtime by the chat API route. No rebuild needed — just push the change.
+
+### Adding a new AI model
+
+Add the model to the `languageModels` map in [`ai/providers.ts`](./ai/providers.ts):
+
+```ts
+"my-new-model": groq("model-id-from-groq"),
+```
+
+It will automatically appear in the model selector UI.
+
+### Adding a new AI tool
+
+Define the tool in [`ai/tools.ts`](./ai/tools.ts) and register it in the `tools` object in [`app/api/chat/route.ts`](./app/api/chat/route.ts).
+
+---
+
+## Related Projects
+
+| Project | Description | Repo |
+|---|---|---|
+| **HexBot** | Internal-ops AI (admin/dev-facing) | Private |
+| **Manitec Command Hub** | FastAPI orchestration API (KB, tasks, deploy triggers) | Private |
+| **Manitec Control Hub** | Internal dashboard | Private |
+| **Banjoshire** | Manitec music project | [banjoshire.vercel.app](https://banjoshire.vercel.app) |
+| **Joe's Faves** | Personal hub & project index | [joesfaves.com](https://joesfaves.com) |
+
+---
+
+## Contributing
+
+This is a Manitec internal project. Issues and PRs from the team are welcome. External contributions are not currently accepted.
+
+---
+
+*Built by [Manitec](https://manitec.pw)*
