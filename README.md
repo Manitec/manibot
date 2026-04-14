@@ -167,7 +167,7 @@ Define the tool in [`ai/tools.ts`](./ai/tools.ts) and register it in the `tools`
 | **HexBot** | Internal-ops AI (admin/dev-facing) | Private |
 | **Manitec Command Hub** | FastAPI orchestration API (KB, tasks, deploy triggers) | Private |
 | **Manitec Control Hub** | Internal dashboard | Private |
-| **Banjoshire** | Manitec music project | [banjoshire.vercel.app](https://banjoshire.vercel.app) |
+| **Banjoshire** | Social chat app — Discord-style community platform | [banjoshire.vercel.app](https://banjoshire.vercel.app) |
 | **Joe's Faves** | Personal hub & project index | [joesfaves.com](https://joesfaves.com) |
 
 ---
